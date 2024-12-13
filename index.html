@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editable List</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="text" />
+      <input type="submit" value="Add" />
+    </form>
+    <ul id="list"></ul>
+    <script>
+      let form = document.getElementById("form");
+      let text = document.getElementById("text");
+      let list = document.getElementById("list");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let listItem = document.createElement("li");
+        listItem.innerText = text.value;
+
+        // Create delete button
+        let deleteButton = document.createElement("button");
+        deleteButton.addEventListener("click", () => {
+          let confirmDelete = window.confirm("Are you sure?");
+          if (confirmDelete) list.removeChild(listItem);
+        });
+        deleteButton.innerHTML = "Delete";
+
+        // Create edit button
+        let editButton = document.createElement("button");
+        editButton.addEventListener("click", () => {
+          let currentText = listItem.firstChild.textContent; // Get current text
+          let editInput = document.createElement("input");
+          editInput.type = "text";
+          editInput.value = currentText;
+
+          // Replace list item text with the input field
+          listItem.firstChild.replaceWith(editInput);
+
+          // Create a save button for editing
+          let saveButton = document.createElement("button");
+          saveButton.textContent = "Save";
+
+          saveButton.addEventListener("click", () => {
+            if (editInput.value.trim() !== "") {
+              listItem.firstChild.replaceWith(
+                document.createTextNode(editInput.value)
+              );
+              saveButton.remove(); // Remove the save button
+            } else {
+              alert("Input cannot be empty.");
+            }
+          });
+
+          listItem.appendChild(saveButton);
+        });
+        editButton.innerHTML = "Edit";
+
+        // Append buttons and list item
+        listItem.appendChild(deleteButton);
+        listItem.appendChild(editButton);
+        list.appendChild(listItem);
+        text.value = "";
+      });
+    </script>
+  </body>
+</html>
